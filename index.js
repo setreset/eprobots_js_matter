@@ -4,8 +4,6 @@ window.onload = function() {
     );
 
     var myCanvas = document.getElementById('world');
-    var WORLD_WIDTH = 1200;
-    var WORLD_HEIGHT = 600;
 
     // module aliases
     var Engine = Matter.Engine,
@@ -55,43 +53,19 @@ window.onload = function() {
 
     // create two boxes and a ground
 
-    var balloptions = {
-        render: {
-            //fillStyle: '#F35e66',
-            //strokeStyle: 'black',
-            //lineWidth: 1
-        },
-        plugin: {
-            wrap: {
-                min: {
-                    x: 0,
-                    y: 0
-                },
-                max: {
-                    x: WORLD_WIDTH,
-                    y: WORLD_HEIGHT
-                }
-            }
-        }
-    }
     //var ballA = Bodies.circle(450, 50, 40, balloptions);
 
     //var boxA = Bodies.rectangle(400, 200, 80, 80, balloptions);
     //var boxB = Bodies.rectangle(450, 50, 80, 80, balloptions);
     //var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true});
 
-    var balls = [];
+    var eprobots = [];
 
     for (var i=0;i<30;i++){
-        var ball = Bodies.circle(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT), 40, balloptions);
-        balls.push(ball)
+        var eprobot = new Eprobot(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
+        eprobots.push(eprobot);
+        World.add(engine.world, eprobot.body);
     }
-
-
-
-
-    // add all of the bodies to the world
-    World.add(engine.world, balls);
 
     // add mouse control
     var mouse = Mouse.create(render.canvas),
@@ -110,20 +84,21 @@ window.onload = function() {
     // keep the mouse in sync with rendering
     render.mouse = mouse;
 
-    var counter = 0;
-    /*Events.on(engine, 'beforeUpdate', function(event) {
-     counter += 1;
+    Events.on(engine, 'beforeUpdate', function(event) {
+        var eprobots_new = [];
+        for (var i=0;i<eprobots.length;i++){
+            var eprobot = eprobots[i];
 
-     // every 1.5 sec
-     //if (counter >= 60 * 1.5) {
-     //Body.setVelocity(ballA, { x: 0, y: -10 });
-     //Body.setAngle(bodyC, -Math.PI * 0.26);
-     //Body.setAngularVelocity(bodyD, 0.2);
+            if (eprobot.isAlive()){
+                eprobot.update();
+                eprobots_new.push(eprobot);
+            }else{
+                World.remove(engine.world, eprobot.body);
+            }
 
-     // reset counter
-     counter = 0;
-     //}
-     });*/
+        }
+        eprobots = eprobots_new;
+     });
 
     function toggle_run(){
         console.log("click");
@@ -131,6 +106,7 @@ window.onload = function() {
             console.log("stop");
             runner.enabled=false;
         }else{
+            console.log("start");
             runner.enabled=true;
         }
 
