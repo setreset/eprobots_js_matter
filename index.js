@@ -5,25 +5,14 @@ window.onload = function() {
 
     var myCanvas = document.getElementById('world');
 
-    // module aliases
-    var Engine = Matter.Engine,
-        Render = Matter.Render,
-        Runner = Matter.Runner,
-        World = Matter.World,
-        Body = Matter.Body,
-        Events = Matter.Events,
-        Bodies = Matter.Bodies,
-        MouseConstraint = Matter.MouseConstraint,
-        Mouse = Matter.Mouse;
-
     // create an engine
-    var engine = Engine.create();
+    var engine = Matter.Engine.create();
 
     // turn gravity off
     engine.world.gravity.y = 0;
 
     // create a renderer
-    var render = Render.create({
+    var render = Matter.Render.create({
         canvas: myCanvas,
         engine: engine,
         options: {
@@ -44,10 +33,10 @@ window.onload = function() {
     //})();
 
     // run the renderer
-    Render.run(render);
+    Matter.Render.run(render);
 
-    var runner = Runner.create();
-    Runner.run(runner, engine);
+    var runner = Matter.Runner.create();
+    Matter.Runner.run(runner, engine);
 
     // ====================================================== //
 
@@ -59,17 +48,16 @@ window.onload = function() {
     //var boxB = Bodies.rectangle(450, 50, 80, 80, balloptions);
     //var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true});
 
-    var eprobots = [];
-
     for (var i=0;i<30;i++){
-        var eprobot = new Eprobot(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
-        eprobots.push(eprobot);
-        World.add(engine.world, eprobot.body);
+        var energy = new Energy(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
+        Matter.World.add(engine.world, energy.body);
     }
 
+    var eprobots = [];
+
     // add mouse control
-    var mouse = Mouse.create(render.canvas),
-        mouseConstraint = MouseConstraint.create(engine, {
+    var mouse = Matter.Mouse.create(render.canvas),
+        mouseConstraint = Matter.MouseConstraint.create(engine, {
             mouse: mouse,
             constraint: {
                 stiffness: 0.2,
@@ -79,12 +67,21 @@ window.onload = function() {
             }
         });
 
-    World.add(engine.world, mouseConstraint);
+    Matter.World.add(engine.world, mouseConstraint);
 
     // keep the mouse in sync with rendering
     render.mouse = mouse;
 
-    Events.on(engine, 'beforeUpdate', function(event) {
+    Matter.Events.on(engine, 'beforeUpdate', function(event) {
+        // init wenn keine eprobots vorhanden
+        if (eprobots.length==0){
+            for (var i=0;i<15;i++){
+                var eprobot = new Eprobot(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
+                eprobots.push(eprobot);
+                Matter.World.add(engine.world, eprobot.body);
+            }
+        }
+
         var eprobots_new = [];
         for (var i=0;i<eprobots.length;i++){
             var eprobot = eprobots[i];
@@ -93,12 +90,51 @@ window.onload = function() {
                 eprobot.update();
                 eprobots_new.push(eprobot);
             }else{
-                World.remove(engine.world, eprobot.body);
+                Matter.World.remove(engine.world, eprobot.body);
             }
 
         }
         eprobots = eprobots_new;
      });
+
+    Matter.Events.on(engine, 'collisionStart', function(event) {
+        let pairs = event.pairs;
+
+        // change object colours to show those starting a collision
+        for (var i = 0; i < pairs.length; i++) {
+            let pair = pairs[i];
+            let a = pair.bodyA;
+            let b = pair.bodyB;
+
+            //console.log(pair.bodyA.label);
+
+            if (a.label == "Eprobot" && b.label == "Energy"){
+                //console.log("Bang");
+            }else if(a.label == "Energy" && b.label == "Eprobot"){
+                //console.log("Bang2");
+                // a entfernen
+                Matter.World.remove(engine.world, a);
+
+                // neues Energyobjekt
+                var energy = new Energy(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
+                Matter.World.add(engine.world, energy.body);
+
+                // b darf sich fortpflanzen!
+                //console.log(b);
+                let new_x = b.position.x+tools_random2(-10,10);
+                let new_y = b.position.y+tools_random2(-10,10);
+                //console.log(new_x,new_y);
+                if (eprobots.length <= 100){
+                    var new_eprobot = new Eprobot(new_x, new_y);
+                    eprobots.push(new_eprobot);
+                    Matter.World.add(engine.world, new_eprobot.body);
+                }
+
+            }
+            //pair.bodyA.render.fillStyle = '#333';
+            //pair.bodyB.render.fillStyle = '#333';
+        }
+    });
 
     function toggle_run(){
         console.log("click");
@@ -113,4 +149,4 @@ window.onload = function() {
     }
 
     document.getElementById("toggle_run").addEventListener("click", toggle_run);
-}
+};

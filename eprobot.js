@@ -1,13 +1,13 @@
 class Eprobot {
 
     constructor(x_pos, y_pos) {
-        this.body = Matter.Bodies.circle(x_pos, y_pos, 40, {
+        this.body = Matter.Bodies.circle(x_pos, y_pos, 20, {
             //density: 0.04, //default 0.001
             //friction: 0.01, //default 0.1
             frictionAir: 0.001, //default 0.01
             restitution: 0.5, //default 0
             render: {
-                //fillStyle: '#F35e66',
+                fillStyle: '#1400f5',
                 //strokeStyle: 'black',
                 //lineWidth: 1
             },
@@ -24,6 +24,9 @@ class Eprobot {
                 }
             }
         });
+
+        this.body.label = "Eprobot";
+        this.body.eprobot = this;
         //console.log("density: "+ this.body.density);
         //console.log("friction: "+ this.body.friction);
         //console.log("frictionAir: "+ this.body.frictionAir);
