@@ -25,8 +25,8 @@ class Eprobot {
             }
         });
 
-        this.body.label = "Eprobot";
-        this.body.eprobot = this;
+        this.body.my_label = "Eprobot";
+        this.body.my_parent = this;
         //console.log("density: "+ this.body.density);
         //console.log("friction: "+ this.body.friction);
         //console.log("frictionAir: "+ this.body.frictionAir);
@@ -51,9 +51,36 @@ class Eprobot {
 
     // MAIN
 
+    getMoveRandom(){
+        var speed = tools_random(10);
+        var angle = Math.random() * Math.PI * 2; // random angle
+        return [speed, angle];
+    }
+
     update(){
+
         if (this.age%50==0){
-            Matter.Body.setVelocity(this.body, { x: tools_random(20)-10, y: tools_random(20)-10 });
+            let speedangle = this.getMoveRandom();
+            let speed = speedangle[0];
+            let angle = speedangle[1];
+
+            let speed_x = this.body.velocity.x + speed * Math.cos(angle);
+            /*if (this.body.velocity.x > VELOCITY_MAX){
+                this.body.velocity.x = VELOCITY_MAX;
+            }else if (this.body.velocity.x < -VELOCITY_MAX){
+                this.body.velocity.x = -VELOCITY_MAX;
+            }*/
+
+            let speed_y = this.body.velocity.y + speed * Math.sin(angle);
+            /*if (this.body.velocity.y > VELOCITY_MAX){
+                this.body.velocity.y = VELOCITY_MAX;
+            }else if (this.body.velocity.y < -VELOCITY_MAX){
+                this.body.velocity.y = -VELOCITY_MAX;
+            }*/
+
+
+            //Matter.Body.applyForce(this.body, 0, [speed * Math.cos(angle), speed * Math.sin(angle)]);
+            Matter.Body.setVelocity(this.body, { x: speed_x, y: speed_y });
             //this.age = 0;
             //Body.setVelocity(ballA, { x: 0, y: -10 });
             //Body.setAngle(bodyC, -Math.PI * 0.26);

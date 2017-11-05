@@ -48,7 +48,7 @@ window.onload = function() {
     //var boxB = Bodies.rectangle(450, 50, 80, 80, balloptions);
     //var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true});
 
-    for (var i=0;i<30;i++){
+    for (var i=0;i<10;i++){
         var energy = new Energy(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
         Matter.World.add(engine.world, energy.body);
     }
@@ -97,10 +97,36 @@ window.onload = function() {
         eprobots = eprobots_new;
      });
 
+    function eprobotEnergyCollision(body_eprobot, body_energy){
+        // a entfernen
+        if (body_energy.my_active === false){
+            return;
+        }
+
+        body_energy.my_active = false;
+        Matter.World.remove(engine.world, body_energy);
+
+        // neues Energyobjekt
+        var energy = new Energy(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
+        Matter.World.add(engine.world, energy.body);
+
+        // b darf sich fortpflanzen!
+        //console.log(b);
+        let new_x = body_eprobot.position.x+tools_random2(-10,10);
+        let new_y = body_eprobot.position.y+tools_random2(-10,10);
+        //console.log(new_x,new_y);
+        if (eprobots.length <= 50){
+            var new_eprobot = new Eprobot(new_x, new_y);
+            eprobots.push(new_eprobot);
+            Matter.World.add(engine.world, new_eprobot.body);
+        }
+    }
+
     Matter.Events.on(engine, 'collisionStart', function(event) {
         let pairs = event.pairs;
 
         // change object colours to show those starting a collision
+        //console.log(pairs.length);
         for (var i = 0; i < pairs.length; i++) {
             let pair = pairs[i];
             let a = pair.bodyA;
@@ -108,27 +134,12 @@ window.onload = function() {
 
             //console.log(pair.bodyA.label);
 
-            if (a.label == "Eprobot" && b.label == "Energy"){
+            if (a.my_label == "Eprobot" && b.my_label == "Energy"){
                 //console.log("Bang");
-            }else if(a.label == "Energy" && b.label == "Eprobot"){
+                eprobotEnergyCollision(a, b);
+            }else if(a.my_label == "Energy" && b.my_label == "Eprobot"){
                 //console.log("Bang2");
-                // a entfernen
-                Matter.World.remove(engine.world, a);
-
-                // neues Energyobjekt
-                var energy = new Energy(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
-                Matter.World.add(engine.world, energy.body);
-
-                // b darf sich fortpflanzen!
-                //console.log(b);
-                let new_x = b.position.x+tools_random2(-10,10);
-                let new_y = b.position.y+tools_random2(-10,10);
-                //console.log(new_x,new_y);
-                if (eprobots.length <= 100){
-                    var new_eprobot = new Eprobot(new_x, new_y);
-                    eprobots.push(new_eprobot);
-                    Matter.World.add(engine.world, new_eprobot.body);
-                }
+                eprobotEnergyCollision(b, a);
 
             }
             //pair.bodyA.render.fillStyle = '#333';
