@@ -1,17 +1,17 @@
 class Eprobot {
 
-    constructor(x_pos, y_pos) {
+    constructor(x_pos, y_pos, init_program) {
         this.body = Matter.Bodies.circle(x_pos, y_pos, 20, {
             //density: 0.04, //default 0.001
             //friction: 0.01, //default 0.1
             frictionAir: 0.001, //default 0.01
-            restitution: 0.5, //default 0
+            restitution: 0.8, //default 0
             render: {
                 fillStyle: '#1400f5',
                 //strokeStyle: 'black',
                 //lineWidth: 1
             },
-            plugin: {
+            /*plugin: {
                 wrap: {
                     min: {
                         x: 0,
@@ -22,11 +22,15 @@ class Eprobot {
                         y: WORLD_HEIGHT
                     }
                 }
-            }
+            }*/
         });
 
         this.body.my_label = "Eprobot";
         this.body.my_parent = this;
+
+        this.init_program = init_program;
+        this.working_program = init_program.slice(0);
+
         //console.log("density: "+ this.body.density);
         //console.log("friction: "+ this.body.friction);
         //console.log("frictionAir: "+ this.body.frictionAir);
@@ -57,26 +61,54 @@ class Eprobot {
         return [speed, angle];
     }
 
+    getMoveOISC(){
+        //this.working_program[settings.PROGRAM_LENGTH-3] = this.my_lifecounter;
+        tools_compute(this.working_program, simsettings.PROGRAM_LENGTH, simsettings.PROGRAM_STEPS);
+
+        var speed_val = this.working_program[simsettings.PROGRAM_LENGTH-1];
+        var angle_val = this.working_program[simsettings.PROGRAM_LENGTH-2];
+
+        if (isFinite(speed_val)){
+            var speed = Math.abs(speed_val) % 5;
+        }else{
+            console.log("Infinite: "+speed_val);
+            var speed = tools_random(5); // random
+        }
+
+        if (isFinite(angle_val)){
+            var angle_deg = Math.abs(angle_val) % 360;
+        }else{
+            console.log("Infinite: "+angle_val);
+            var angle_deg = tools_random(360); // random
+        }
+
+        var angle = Math.radians(angle_deg);
+
+        return [speed, angle];
+    }
+
+
+
     update(){
 
-        if (this.age%50==0){
-            let speedangle = this.getMoveRandom();
+        if (this.age%10==0){
+            let speedangle = this.getMoveOISC();
             let speed = speedangle[0];
             let angle = speedangle[1];
 
             let speed_x = this.body.velocity.x + speed * Math.cos(angle);
-            /*if (this.body.velocity.x > VELOCITY_MAX){
-                this.body.velocity.x = VELOCITY_MAX;
-            }else if (this.body.velocity.x < -VELOCITY_MAX){
-                this.body.velocity.x = -VELOCITY_MAX;
-            }*/
+            if (speed_x > simsettings.VELOCITY_MAX){
+                speed_x = simsettings.VELOCITY_MAX;
+            }else if (speed_x < -simsettings.VELOCITY_MAX){
+                speed_x = -simsettings.VELOCITY_MAX;
+            }
 
             let speed_y = this.body.velocity.y + speed * Math.sin(angle);
-            /*if (this.body.velocity.y > VELOCITY_MAX){
-                this.body.velocity.y = VELOCITY_MAX;
-            }else if (this.body.velocity.y < -VELOCITY_MAX){
-                this.body.velocity.y = -VELOCITY_MAX;
-            }*/
+            if (speed_y > simsettings.VELOCITY_MAX){
+                speed_y = simsettings.VELOCITY_MAX;
+            }else if (speed_y < -simsettings.VELOCITY_MAX){
+                speed_y = -simsettings.VELOCITY_MAX;
+            }
 
 
             //Matter.Body.applyForce(this.body, 0, [speed * Math.cos(angle), speed * Math.sin(angle)]);

@@ -48,12 +48,30 @@ window.onload = function() {
     //var boxB = Bodies.rectangle(450, 50, 80, 80, balloptions);
     //var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true});
 
-    for (var i=0;i<10;i++){
+    for (var i=0;i<20;i++){
         var energy = new Energy(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
         Matter.World.add(engine.world, energy.body);
     }
 
-    var eprobots = [];
+    let thickness = 100;
+
+
+    function addBorders(){
+        Matter.World.add(engine.world, [
+            // walls
+
+            // top
+            Matter.Bodies.rectangle(WORLD_WIDTH/2, -thickness/2, WORLD_WIDTH*1.5, thickness, { isStatic: true }),
+            // bottom
+            Matter.Bodies.rectangle(WORLD_WIDTH/2, WORLD_HEIGHT+thickness/2, WORLD_WIDTH*1.5, thickness, { isStatic: true }),
+            // right
+            Matter.Bodies.rectangle(WORLD_WIDTH+thickness/2, WORLD_HEIGHT/2, thickness, WORLD_HEIGHT*1.5, { isStatic: true }),
+            // left
+            Matter.Bodies.rectangle(-thickness/2, WORLD_HEIGHT/2, thickness, WORLD_HEIGHT*1.5, { isStatic: true })
+        ]);
+    }
+
+    addBorders();
 
     // add mouse control
     var mouse = Matter.Mouse.create(render.canvas),
@@ -72,11 +90,22 @@ window.onload = function() {
     // keep the mouse in sync with rendering
     render.mouse = mouse;
 
+    var eprobots = [];
+
     Matter.Events.on(engine, 'beforeUpdate', function(event) {
         // init wenn keine eprobots vorhanden
         if (eprobots.length==0){
+            console.log("init eprobots");
+
             for (var i=0;i<15;i++){
-                var eprobot = new Eprobot(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
+
+                var init_program = [];
+                for (var pi = 0; pi < simsettings.PROGRAM_LENGTH; pi++) {
+                    var val = tools_random(simsettings.PROGRAM_LENGTH * 10) - simsettings.PROGRAM_LENGTH;
+                    init_program.push(val);
+                }
+
+                var eprobot = new Eprobot(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT), init_program);
                 eprobots.push(eprobot);
                 Matter.World.add(engine.world, eprobot.body);
             }
@@ -115,8 +144,9 @@ window.onload = function() {
         let new_x = body_eprobot.position.x+tools_random2(-10,10);
         let new_y = body_eprobot.position.y+tools_random2(-10,10);
         //console.log(new_x,new_y);
-        if (eprobots.length <= 50){
-            var new_eprobot = new Eprobot(new_x, new_y);
+        if (eprobots.length <= simsettings.EPROBOTS_MAX){
+            var new_dna = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, body_eprobot.my_parent.init_program);
+            var new_eprobot = new Eprobot(new_x, new_y, new_dna);
             eprobots.push(new_eprobot);
             Matter.World.add(engine.world, new_eprobot.body);
         }
@@ -147,6 +177,32 @@ window.onload = function() {
         }
     });
 
+    function toggleFullscreen() {
+        var elem = myCanvas;
+        if (!document.fullscreenElement && !document.mozFullScreenElement &&
+            !document.webkitFullscreenElement && !document.msFullscreenElement) {
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            } else if (elem.mozRequestFullScreen) {
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        }
+    }
+
     function toggle_run(){
         console.log("click");
         if (runner.enabled){
@@ -160,4 +216,5 @@ window.onload = function() {
     }
 
     document.getElementById("toggle_run").addEventListener("click", toggle_run);
+    document.getElementById("toggle_fullscreen").addEventListener("click", toggleFullscreen);
 };

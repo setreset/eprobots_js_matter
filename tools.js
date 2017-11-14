@@ -68,3 +68,13 @@ function tools_mutate(mutate_possibility, mutate_strength, memory) {
 
     return new_memory;
 }
+
+// Converts from degrees to radians.
+Math.radians = function(degrees) {
+    return degrees * Math.PI / 180;
+};
+
+// Converts from radians to degrees.
+Math.degrees = function(radians) {
+    return radians * 180 / Math.PI;
+};
