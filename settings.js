@@ -5,7 +5,8 @@ var simsettings = {
     MUTATE_POSSIBILITY: 0.01,
     MUTATE_STRENGTH: 400,
     VELOCITY_MAX: 10,
-    EPROBOTS_MAX: 100
+    EPROBOTS_MAX: 100,
+    BORDERS: false
 }
 
 console.log(window.screen.width);

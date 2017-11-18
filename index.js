@@ -19,7 +19,7 @@ window.onload = function() {
             width: WORLD_WIDTH,
             height: WORLD_HEIGHT,
             background: '#eeeeee',
-            wireframes: false,
+            wireframes: true,
             showAngleIndicator: false
         }
     });
@@ -71,7 +71,9 @@ window.onload = function() {
         ]);
     }
 
-    addBorders();
+    if (simsettings.BORDERS){
+        addBorders();
+    }
 
     // add mouse control
     var mouse = Matter.Mouse.create(render.canvas),
@@ -115,7 +117,7 @@ window.onload = function() {
         for (var i=0;i<eprobots.length;i++){
             var eprobot = eprobots[i];
 
-            if (eprobot.isAlive()){
+            if (eprobot.isExistent()){
                 eprobot.update();
                 eprobots_new.push(eprobot);
             }else{
@@ -162,12 +164,13 @@ window.onload = function() {
             let a = pair.bodyA;
             let b = pair.bodyB;
 
+            //console.log(a);
             //console.log(pair.bodyA.label);
 
-            if (a.my_label == "Eprobot" && b.my_label == "Energy"){
+            if (a.my_label == "Eprobot Body" && b.my_label == "Energy"){
                 //console.log("Bang");
                 eprobotEnergyCollision(a, b);
-            }else if(a.my_label == "Energy" && b.my_label == "Eprobot"){
+            }else if(a.my_label == "Energy" && b.my_label == "Eprobot Body"){
                 //console.log("Bang2");
                 eprobotEnergyCollision(b, a);
 
