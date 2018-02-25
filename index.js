@@ -19,7 +19,7 @@ window.onload = function() {
             width: WORLD_WIDTH,
             height: WORLD_HEIGHT,
             background: '#eeeeee',
-            wireframes: true,
+            wireframes: false,
             showAngleIndicator: false
         }
     });
@@ -99,7 +99,7 @@ window.onload = function() {
         if (eprobots.length==0){
             console.log("init eprobots");
 
-            for (var i=0;i<15;i++){
+            for (var i=0;i<simsettings.EPROBOTS_INIT;i++){
 
                 var init_program = [];
                 for (var pi = 0; pi < simsettings.PROGRAM_LENGTH; pi++) {
@@ -154,6 +154,16 @@ window.onload = function() {
         }
     }
 
+    function eprobotEnergyDetection(body_eprobot, offset){
+        body_eprobot.my_parent.detected_energy += offset;
+        //console.log(body_eprobot.my_parent.detected_energy);
+    }
+
+    function eprobotEprobotDetection(body_eprobot, offset){
+        body_eprobot.my_parent.detected_eprobots += offset;
+        //console.log(body_eprobot.my_parent.detected_eprobots);
+    }
+
     Matter.Events.on(engine, 'collisionStart', function(event) {
         let pairs = event.pairs;
 
@@ -173,10 +183,52 @@ window.onload = function() {
             }else if(a.my_label == "Energy" && b.my_label == "Eprobot Body"){
                 //console.log("Bang2");
                 eprobotEnergyCollision(b, a);
+            }
 
+            else if(a.my_label == "Eprobot Sensor" && b.my_label == "Energy"){
+                console.log("collisionStart sensor->energy");
+                eprobotEnergyDetection(a, 1);
+            }else if(a.my_label == "Energy" && b.my_label == "Eprobot Sensor"){
+                console.log("collisionStart energy->sensor");
+                eprobotEnergyDetection(b, 1);
+            }else if(a.my_label == "Eprobot Sensor" && b.my_label == "Eprobot Body"){
+                //console.log("collisionStart sensor->energy");
+                eprobotEprobotDetection(a, 1);
+            }else if(a.my_label == "Eprobot Body" && b.my_label == "Eprobot Sensor"){
+                //console.log("collisionStart energy->sensor");
+                eprobotEprobotDetection(b, 1);
             }
             //pair.bodyA.render.fillStyle = '#333';
             //pair.bodyB.render.fillStyle = '#333';
+        }
+    });
+
+    Matter.Events.on(engine, 'collisionEnd', function(event) {
+        let pairs = event.pairs;
+
+        // change object colours to show those starting a collision
+        //console.log(pairs.length);
+        for (var i = 0; i < pairs.length; i++) {
+            let pair = pairs[i];
+            let a = pair.bodyA;
+            let b = pair.bodyB;
+
+            //console.log(a);
+            //console.log(pair.bodyA.label);
+
+            if(a.my_label == "Eprobot Sensor" && b.my_label == "Energy"){
+                //console.log("collisionEnd sensor->energy");
+                eprobotEnergyDetection(a, -1);
+            }else if(a.my_label == "Energy" && b.my_label == "Eprobot Sensor"){
+                //console.log("collisionEnd energy->sensor");
+                eprobotEnergyDetection(b, -1);
+            }else if(a.my_label == "Eprobot Sensor" && b.my_label == "Eprobot Body"){
+                //console.log("collisionEnd sensor->energy");
+                eprobotEprobotDetection(a, -1);
+            }else if(a.my_label == "Eprobot Body" && b.my_label == "Eprobot Sensor"){
+                //console.log("collisionEnd energy->sensor");
+                eprobotEprobotDetection(b, -1);
+            }
         }
     });
 

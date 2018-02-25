@@ -1,24 +1,38 @@
 class Eprobot {
 
     constructor(x_pos, y_pos, init_program) {
-        let options = {
+        let options_body = {
             //density: 0.04, //default 0.001
             //friction: 0.01, //default 0.1
             frictionAir: 0.001, //default 0.01
             restitution: 0.8, //default 0
             render: {
-                fillStyle: '#1400f5',
+                //fillStyle: '#1400f5',
                 //strokeStyle: 'black',
                 //lineWidth: 1
             }
         }
 
-        let eprobot_body = Matter.Bodies.circle(x_pos, y_pos, 20, options);
-        let eprobot_sensor = Matter.Bodies.circle(x_pos, y_pos, 40, options);
+        let options_sensor = {
+            //density: 0.04, //default 0.001
+            friction: 0, //default 0.1
+            frictionAir: 0, //default 0.01
+            //restitution: 0.8, //default 0
+            render: {
+                //fillStyle: '#1400f5',
+                //strokeStyle: 'black',
+                //lineWidth: 1
+                visible: false
+            }
+        }
+
+        let eprobot_body = Matter.Bodies.circle(x_pos, y_pos, 20, options_body);
+        let eprobot_sensor = Matter.Bodies.circle(x_pos, y_pos, 60, options_sensor);
         eprobot_sensor.isSensor = true;
 
         let compound_options = {
             parts: [eprobot_body, eprobot_sensor]
+            //parts: [eprobot_body]
         }
         if (!simsettings.BORDERS){
             compound_options["plugin"] = {
@@ -53,7 +67,10 @@ class Eprobot {
         //console.log("restitution: "+ this.body.restitution);
 
         this.age=0;
-        this.lifetime = 200 + tools_random2(200, 300);
+        this.lifetime = simsettings.LIFETIME_BASE + tools_random2(200, 300);
+
+        this.detected_energy = 0;
+        this.detected_eprobots = 0;
 
         //// init
         //var t = s.getWorld().getTerrain(x_pos, y_pos);
@@ -78,17 +95,16 @@ class Eprobot {
     }
 
     getMoveOISC(){
-        //this.working_program[settings.PROGRAM_LENGTH-3] = this.my_lifecounter;
         tools_compute(this.working_program, simsettings.PROGRAM_LENGTH, simsettings.PROGRAM_STEPS);
 
         var speed_val = this.working_program[simsettings.PROGRAM_LENGTH-1];
         var angle_val = this.working_program[simsettings.PROGRAM_LENGTH-2];
 
         if (isFinite(speed_val)){
-            var speed = Math.abs(speed_val) % 5;
+            var speed = Math.abs(speed_val) % simsettings.IMPULSE_MAX;
         }else{
             console.log("Infinite: "+speed_val);
-            var speed = tools_random(5); // random
+            var speed = tools_random(simsettings.IMPULSE_MAX); // random
         }
 
         if (isFinite(angle_val)){
@@ -109,6 +125,12 @@ class Eprobot {
 
         if (this.isAlive()){
             if (this.age%10==0){
+
+                this.working_program[simsettings.PROGRAM_LENGTH-3] = this.detected_energy;
+                this.working_program[simsettings.PROGRAM_LENGTH-4] = this.detected_eprobots;
+                this.working_program[simsettings.PROGRAM_LENGTH-5] = this.age;
+                this.working_program[simsettings.PROGRAM_LENGTH-6] = tools_random2(-100, 100);
+
                 let speedangle = this.getMoveOISC();
                 let speed = speedangle[0];
                 let angle = speedangle[1];
@@ -148,7 +170,7 @@ class Eprobot {
     }
 
     isExistent(){
-        return this.age < this.lifetime + 500;
+        return this.age < this.lifetime + simsettings.EXISTTIME;
     }
 
     //newStep(){
