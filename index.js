@@ -48,7 +48,7 @@ window.onload = function() {
     //var boxB = Bodies.rectangle(450, 50, 80, 80, balloptions);
     //var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true});
 
-    for (var i=0;i<20;i++){
+    for (var i=0;i<simsettings.ENERGY_COUNT;i++){
         var energy = new Energy(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
         Matter.World.add(engine.world, energy.body);
     }

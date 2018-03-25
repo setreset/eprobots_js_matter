@@ -26,7 +26,7 @@ class Eprobot {
             }
         }
 
-        let eprobot_body = Matter.Bodies.circle(x_pos, y_pos, 20, options_body);
+        let eprobot_body = Matter.Bodies.circle(x_pos, y_pos, simsettings.BODY_RADIUS, options_body);
         let eprobot_sensor = Matter.Bodies.circle(x_pos, y_pos, 60, options_sensor);
         eprobot_sensor.isSensor = true;
 
@@ -170,7 +170,7 @@ class Eprobot {
     }
 
     isExistent(){
-        return this.age < this.lifetime + simsettings.EXISTTIME;
+        return this.age < this.lifetime + simsettings.FOSSILTIME;
     }
 
     //newStep(){
