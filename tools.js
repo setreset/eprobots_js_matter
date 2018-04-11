@@ -10,19 +10,19 @@ function tools_random2(min, max){
 }
 
 // subleq: https://en.wikipedia.org/wiki/One_instruction_set_computer
-function tools_compute(memory, PL, PS) {
+function tools_compute(program, data, PS) {
     var program_counter = 0;
     var step_counter = 0;
     var a, b, c;
 
-    while (program_counter >= 0 && (program_counter + 2) < PL && step_counter < PS) {
-        a = memory[program_counter];
-        b = memory[program_counter + 1];
-        c = memory[program_counter + 2];
+    while (program_counter >= 0 && (program_counter + 2) < program.length && step_counter < PS) {
+        a = program[program_counter];
+        b = program[program_counter + 1];
+        c = program[program_counter + 2];
 
-        a = a % PL;
-        b = b % PL;
-        c = c % PL;
+        a = a % data.length;
+        b = b % data.length;
+        c = c % program.length;
 
         //a = Math.abs(a % memory.length);
         //b = Math.abs(b % memory.length);
@@ -30,9 +30,9 @@ function tools_compute(memory, PL, PS) {
 
         if (a < 0 || b < 0) {
             program_counter = -1;
-        } else {
-            memory[b] = memory[b] - memory[a];
-            if (memory[b] > 0) {
+        }else{
+            data[b] = data[b] - data[a];
+            if (data[b] > 0) {
                 program_counter = program_counter + 3;
             } else {
                 //c = memory[program_counter + 2];

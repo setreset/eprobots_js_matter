@@ -101,13 +101,19 @@ window.onload = function() {
 
             for (var i=0;i<simsettings.EPROBOTS_INIT;i++){
 
-                var init_program = [];
+                var program = [];
                 for (var pi = 0; pi < simsettings.PROGRAM_LENGTH; pi++) {
                     var val = tools_random(simsettings.PROGRAM_LENGTH * 10) - simsettings.PROGRAM_LENGTH;
-                    init_program.push(val);
+                    program.push(val);
                 }
 
-                var eprobot = new Eprobot(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT), init_program);
+                var init_data = [];
+                for (var di = 0; di < simsettings.DATA_LENGTH; di++) {
+                    var val = tools_random(simsettings.DATA_LENGTH * 10) - simsettings.DATA_LENGTH;
+                    init_data.push(val);
+                }
+
+                var eprobot = new Eprobot(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT), program, init_data);
                 eprobots.push(eprobot);
                 Matter.World.add(engine.world, eprobot.body);
             }
@@ -147,8 +153,9 @@ window.onload = function() {
         let new_y = body_eprobot.position.y+tools_random2(-10,10);
         //console.log(new_x,new_y);
         if (eprobots.length <= simsettings.EPROBOTS_MAX){
-            var new_dna = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, body_eprobot.my_parent.init_program);
-            var new_eprobot = new Eprobot(new_x, new_y, new_dna);
+            var new_program = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, body_eprobot.my_parent.program);
+            var new_data = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, body_eprobot.my_parent.init_data);
+            var new_eprobot = new Eprobot(new_x, new_y, new_program, new_data);
             eprobots.push(new_eprobot);
             Matter.World.add(engine.world, new_eprobot.body);
         }
