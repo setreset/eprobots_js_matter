@@ -16,5 +16,5 @@ var simsettings = {
 }
 
 console.log(window.screen.width);
-var WORLD_WIDTH = window.screen.width; //1800;
-var WORLD_HEIGHT = window.screen.height; //800
+var WORLD_WIDTH = window.innerWidth; //window.screen.width; //1800;
+var WORLD_HEIGHT= window.innerHeight; //window.screen.height; //800

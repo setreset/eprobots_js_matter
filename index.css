@@ -1,0 +1,23 @@
+html, body {
+    width:  100%;
+    height: 100%;
+    margin: 0px;
+}
+
+/*#world:-webkit-full-screen { width: 100%; height: 100%; }*/
+
+canvas {
+    position:absolute;
+}
+
+#controls {
+    #background-color: orange;
+    position: absolute;
+    z-index: 1;
+    background-color: rgba(0,0,0,0.2);
+    width: 250px;
+    #height: 175px;
+    #top: 150px;
+    #left: 200px;
+    padding:3px;
+}
