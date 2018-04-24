@@ -159,6 +159,11 @@ window.onload = function() {
             var new_eprobot = new Eprobot(new_x, new_y, new_program, new_data);
             eprobots.push(new_eprobot);
             Matter.World.add(engine.world, new_eprobot.body);
+        }else{
+            body_eprobot.my_parent.lifetime += 50;
+            if (body_eprobot.my_parent.lifetime > simsettings.LIFETIME_BASE * 3){
+                body_eprobot.my_parent.lifetime = simsettings.LIFETIME_BASE * 3;
+            }
         }
     }
 
@@ -279,5 +284,5 @@ window.onload = function() {
     }
 
     document.getElementById("toggle_run").addEventListener("click", toggle_run);
-    document.getElementById("toggle_fullscreen").addEventListener("click", toggleFullscreen);
+    //document.getElementById("toggle_fullscreen").addEventListener("click", toggleFullscreen);
 };

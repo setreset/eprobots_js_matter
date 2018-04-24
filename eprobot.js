@@ -31,8 +31,8 @@ class Eprobot {
         eprobot_sensor.isSensor = true;
 
         let compound_options = {
-            parts: [eprobot_body, eprobot_sensor]
-            //parts: [eprobot_body]
+            //parts: [eprobot_body, eprobot_sensor]
+            parts: [eprobot_body]
         }
         if (!simsettings.BORDERS){
             compound_options["plugin"] = {

@@ -1,3 +1,7 @@
+console.log(window.screen.width);
+var WORLD_WIDTH = window.innerWidth; //window.screen.width; //1800;
+var WORLD_HEIGHT = window.innerHeight; //window.screen.height; //800
+
 var simsettings = {
     LIFETIME_BASE: 500,
     PROGRAM_LENGTH: 1000,
@@ -12,9 +16,5 @@ var simsettings = {
     FOSSILTIME: 250,
     EPROBOTS_INIT: 30,
     BODY_RADIUS: 15,
-    ENERGY_COUNT: 40
+    ENERGY_COUNT: (WORLD_WIDTH * WORLD_HEIGHT) / 150000
 }
-
-console.log(window.screen.width);
-var WORLD_WIDTH = window.innerWidth; //window.screen.width; //1800;
-var WORLD_HEIGHT= window.innerHeight; //window.screen.height; //800
