@@ -126,12 +126,13 @@ class Eprobot {
     update(){
 
         if (this.isAlive()){
-            if (this.age%10==0){
+            if (this.age%simsettings.UPDATE_RATE==0){
 
-                this.working_data[2] = this.detected_energy;
-                this.working_data[3] = this.detected_eprobots;
-                this.working_data[4] = this.age;
-                this.working_data[5] = tools_random2(-100, 100);
+                // input
+                //this.working_data[2] = this.detected_energy;
+                //this.working_data[3] = this.detected_eprobots;
+                //this.working_data[4] = this.age;
+                //this.working_data[5] = tools_random2(-100, 100);
 
                 let speedangle = this.getMoveOISC();
                 let speed = speedangle[0];

@@ -110,7 +110,7 @@ window.onload = function() {
 
                 var init_data = [];
                 for (var di = 0; di < simsettings.DATA_LENGTH; di++) {
-                    var val = tools_random(simsettings.DATA_LENGTH * 10) - simsettings.DATA_LENGTH;
+                    var val = tools_random2(-720, 720);
                     init_data.push(val);
                 }
 
