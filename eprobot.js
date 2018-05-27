@@ -1,15 +1,18 @@
 class Eprobot {
 
-    constructor(x_pos, y_pos, program, init_data) {
+    constructor(x_pos, y_pos, program, init_data, hue, size) {
+        this.hue = hue;
+        this.size = size;
+
         let options_body = {
             //density: 0.04, //default 0.001
             //friction: 0.01, //default 0.1
             frictionAir: 0.001, //default 0.01
             restitution: 0.8, //default 0
             render: {
-                //fillStyle: '#1400f5',
-                //strokeStyle: 'black',
-                //lineWidth: 1
+                fillStyle: "hsl("+hue+", 100%, 50%)",
+                strokeStyle: 'black',
+                lineWidth: 1
             }
         }
 
@@ -26,9 +29,16 @@ class Eprobot {
             }
         }
 
-        let eprobot_body = Matter.Bodies.circle(x_pos, y_pos, simsettings.BODY_RADIUS, options_body);
-        let eprobot_sensor = Matter.Bodies.circle(x_pos, y_pos, 60, options_sensor);
-        eprobot_sensor.isSensor = true;
+        let eprobot_body = Matter.Bodies.circle(x_pos, y_pos, size, options_body);
+
+        eprobot_body.my_label = "Eprobot Body";
+        eprobot_body.my_parent = this;
+
+        //let eprobot_sensor = Matter.Bodies.circle(x_pos, y_pos, 60, options_sensor);
+        //eprobot_sensor.isSensor = true;
+
+        //eprobot_sensor.my_label = "Eprobot Sensor";
+        //eprobot_sensor.my_parent = this;
 
         let compound_options = {
             //parts: [eprobot_body, eprobot_sensor]
@@ -51,12 +61,6 @@ class Eprobot {
 
         let eprobot_compound = Matter.Body.create(compound_options);
         this.body = eprobot_compound;
-
-        eprobot_body.my_label = "Eprobot Body";
-        eprobot_body.my_parent = this;
-
-        eprobot_sensor.my_label = "Eprobot Sensor";
-        eprobot_sensor.my_parent = this;
 
         this.program = program;
 
@@ -129,10 +133,10 @@ class Eprobot {
             if (this.age%simsettings.UPDATE_RATE==0){
 
                 // input
-                //this.working_data[2] = this.detected_energy;
-                //this.working_data[3] = this.detected_eprobots;
-                //this.working_data[4] = this.age;
-                //this.working_data[5] = tools_random2(-100, 100);
+                this.working_data[2] = this.detected_energy;
+                this.working_data[3] = this.detected_eprobots;
+                this.working_data[4] = this.age;
+                this.working_data[5] = tools_random2(-100, 100);
 
                 let speedangle = this.getMoveOISC();
                 let speed = speedangle[0];
@@ -152,6 +156,10 @@ class Eprobot {
                     speed_y = -simsettings.VELOCITY_MAX;
                 }
 
+                if (this.size > simsettings.BODY_RADIUS){
+                    speed_x = speed_x * (simsettings.BODY_RADIUS/(this.size*1.5));
+                    speed_y = speed_y * (simsettings.BODY_RADIUS/(this.size*1.5));
+                }
 
                 //Matter.Body.applyForce(this.body, 0, [speed * Math.cos(angle), speed * Math.sin(angle)]);
                 Matter.Body.setVelocity(this.body, { x: speed_x, y: speed_y });

@@ -72,6 +72,30 @@ window.onload = function() {
         ]);
     }
 
+    function initEprobots(){
+        console.log("init eprobots");
+
+        for (var i=0;i<simsettings.EPROBOTS_INIT;i++){
+
+            var program = [];
+            for (var pi = 0; pi < simsettings.PROGRAM_LENGTH; pi++) {
+                var val = tools_random(simsettings.PROGRAM_LENGTH * 10) - simsettings.PROGRAM_LENGTH;
+                program.push(val);
+            }
+
+            var init_data = [];
+            for (var di = 0; di < simsettings.DATA_LENGTH; di++) {
+                var val = tools_random2(-720, 720);
+                init_data.push(val);
+            }
+
+            var hue = tools_random(360);
+            var eprobot = new Eprobot(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT), program, init_data, hue, simsettings.BODY_RADIUS);
+            eprobots.push(eprobot);
+            Matter.World.add(engine.world, eprobot.body);
+        }
+    }
+
     if (simsettings.BORDERS){
         addBorders();
     }
@@ -98,26 +122,7 @@ window.onload = function() {
     Matter.Events.on(engine, 'beforeUpdate', function(event) {
         // init wenn keine eprobots vorhanden
         if (eprobots.length==0){
-            console.log("init eprobots");
-
-            for (var i=0;i<simsettings.EPROBOTS_INIT;i++){
-
-                var program = [];
-                for (var pi = 0; pi < simsettings.PROGRAM_LENGTH; pi++) {
-                    var val = tools_random(simsettings.PROGRAM_LENGTH * 10) - simsettings.PROGRAM_LENGTH;
-                    program.push(val);
-                }
-
-                var init_data = [];
-                for (var di = 0; di < simsettings.DATA_LENGTH; di++) {
-                    var val = tools_random2(-720, 720);
-                    init_data.push(val);
-                }
-
-                var eprobot = new Eprobot(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT), program, init_data);
-                eprobots.push(eprobot);
-                Matter.World.add(engine.world, eprobot.body);
-            }
+            initEprobots();
         }
 
         var eprobots_new = [];
@@ -135,6 +140,41 @@ window.onload = function() {
         eprobots = eprobots_new;
      });
 
+    function eprobotProcreation(body_eprobot){
+        // b darf sich fortpflanzen!
+        //console.log(b);
+        let new_x = body_eprobot.position.x+tools_random2(-10,10);
+        let new_y = body_eprobot.position.y+tools_random2(-10,10);
+        //console.log(new_x,new_y);
+        if (eprobots.length <= simsettings.EPROBOTS_MAX){
+            var new_program = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, body_eprobot.my_parent.program);
+            var new_data = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, body_eprobot.my_parent.init_data);
+
+            //var new_hue = body_eprobot.my_parent.hue + tools_random2(-9, 10);
+            //if (new_hue > 360){
+            //    new_hue = new_hue - 360;
+            //}else if (new_hue < 0){
+            //    new_hue = 360 + new_hue;
+            //}
+            var new_hue = body_eprobot.my_parent.hue;
+            var new_size = body_eprobot.my_parent.size + tools_random2(-2, 3);
+            if (new_size<5){
+                new_size=5;
+            }else if (new_size>100){
+                new_size=100;
+            }
+
+            var new_eprobot = new Eprobot(new_x, new_y, new_program, new_data, new_hue, new_size);
+            eprobots.push(new_eprobot);
+            Matter.World.add(engine.world, new_eprobot.body);
+        }else{
+            body_eprobot.my_parent.lifetime += 50;
+            if (body_eprobot.my_parent.lifetime > simsettings.LIFETIME_BASE * 3){
+                body_eprobot.my_parent.lifetime = simsettings.LIFETIME_BASE * 3;
+            }
+        }
+    }
+
     function eprobotEnergyCollision(body_eprobot, body_energy){
         // a entfernen
         if (body_energy.my_active === false){
@@ -148,23 +188,7 @@ window.onload = function() {
         var energy = new Energy(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
         Matter.World.add(engine.world, energy.body);
 
-        // b darf sich fortpflanzen!
-        //console.log(b);
-        let new_x = body_eprobot.position.x+tools_random2(-10,10);
-        let new_y = body_eprobot.position.y+tools_random2(-10,10);
-        //console.log(new_x,new_y);
-        if (eprobots.length <= simsettings.EPROBOTS_MAX){
-            var new_program = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, body_eprobot.my_parent.program);
-            var new_data = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, body_eprobot.my_parent.init_data);
-            var new_eprobot = new Eprobot(new_x, new_y, new_program, new_data);
-            eprobots.push(new_eprobot);
-            Matter.World.add(engine.world, new_eprobot.body);
-        }else{
-            body_eprobot.my_parent.lifetime += 50;
-            if (body_eprobot.my_parent.lifetime > simsettings.LIFETIME_BASE * 3){
-                body_eprobot.my_parent.lifetime = simsettings.LIFETIME_BASE * 3;
-            }
-        }
+        eprobotProcreation(body_eprobot);
     }
 
     function eprobotEnergyDetection(body_eprobot, offset){

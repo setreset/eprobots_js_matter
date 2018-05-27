@@ -11,7 +11,7 @@ var simsettings = {
     MUTATE_STRENGTH: 400,
     VELOCITY_MAX: 10,
     IMPULSE_MAX: 10,
-    EPROBOTS_MAX: 75,
+    EPROBOTS_MAX: 100,
     BORDERS: true,
     FOSSILTIME: 250,
     EPROBOTS_INIT: 30,
