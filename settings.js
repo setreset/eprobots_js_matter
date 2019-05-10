@@ -10,12 +10,22 @@ var simsettings = {
     MUTATE_POSSIBILITY: 0.01,
     MUTATE_STRENGTH: 400,
     VELOCITY_MAX: 10,
-    IMPULSE_MAX: 10,
-    EPROBOTS_MAX: 100,
+    IMPULSE_MAX: 7,
+    EPROBOTS_MAX: 500,
     BORDERS: true,
     FOSSILTIME: 250,
-    EPROBOTS_INIT: 30,
-    BODY_RADIUS: 15,
-    ENERGY_COUNT: (WORLD_WIDTH * WORLD_HEIGHT) / 150000,
+    EPROBOTS_INIT: 50,
+    BODY_RADIUS: 3,
+    ENERGY_COUNT: 10, //(WORLD_WIDTH * WORLD_HEIGHT) / 50000,
     UPDATE_RATE: 10
+};
+
+var stats = {};
+
+function stats_incr(key){
+    if (key in stats){
+        stats[key]++;
+    }else{
+        stats[key] = 1;
+    }
 }

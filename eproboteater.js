@@ -1,4 +1,4 @@
-class Eprobot {
+class EprobotEater {
 
     constructor(x_pos, y_pos, program, init_data, hue, size) {
         this.hue = hue;
@@ -31,7 +31,7 @@ class Eprobot {
 
         let eprobot_body = Matter.Bodies.circle(x_pos, y_pos, size, options_body);
 
-        eprobot_body.my_label = "Eprobot Body";
+        eprobot_body.my_label = "Eproboteater Body";
         eprobot_body.my_parent = this;
 
         //let eprobot_sensor = Matter.Bodies.circle(x_pos, y_pos, 60, options_sensor);

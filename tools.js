@@ -42,9 +42,7 @@ function tools_compute(program, data, PS) {
         }
         step_counter++;
     }
-    if (step_counter>=PS){
-        console.log("high stepcounter: " + step_counter);
-    }
+
     return step_counter;
 }
 
