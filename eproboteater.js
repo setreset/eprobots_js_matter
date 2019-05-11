@@ -29,10 +29,10 @@ class EprobotEater {
             }
         }
 
-        let eprobot_body = Matter.Bodies.circle(x_pos, y_pos, size, options_body);
+        this.body = Matter.Bodies.circle(x_pos, y_pos, size, options_body);
 
-        eprobot_body.my_label = "Eproboteater Body";
-        eprobot_body.my_parent = this;
+        this.body.my_label = "Eproboteater Body";
+        this.body.my_parent = this;
 
         //let eprobot_sensor = Matter.Bodies.circle(x_pos, y_pos, 60, options_sensor);
         //eprobot_sensor.isSensor = true;
@@ -40,10 +40,10 @@ class EprobotEater {
         //eprobot_sensor.my_label = "Eprobot Sensor";
         //eprobot_sensor.my_parent = this;
 
-        let compound_options = {
+        /*let compound_options = {
             //parts: [eprobot_body, eprobot_sensor]
             parts: [eprobot_body]
-        }
+        }*/
         if (!simsettings.BORDERS){
             compound_options["plugin"] = {
                 wrap: {
@@ -59,8 +59,8 @@ class EprobotEater {
             }
         }
 
-        let eprobot_compound = Matter.Body.create(compound_options);
-        this.body = eprobot_compound;
+        //let eprobot_compound = Matter.Body.create(compound_options);
+        //this.body = eprobot_compound;
 
         this.program = program;
 

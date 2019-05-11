@@ -342,7 +342,8 @@ window.onload = function() {
         }
     });
 
-    Matter.Events.on(engine, 'collisionEnd', function(event) {
+    /*Matter.Events.on(engine, 'collisionEnd', function(event) {
+        return;
         let pairs = event.pairs;
 
         // change object colours to show those starting a collision
@@ -369,7 +370,7 @@ window.onload = function() {
                 eprobotEprobotDetection(b, -1);
             }
         }
-    });
+    });*/
 
     function toggleFullscreen() {
         var elem = myCanvas;
