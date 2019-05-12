@@ -73,7 +73,7 @@ window.onload = function() {
     }
 
     function initEprobots(){
-        console.log("init eprobots");
+        log("init eprobots");
 
         for (var i=0;i<simsettings.EPROBOTS_INIT;i++){
 
@@ -97,7 +97,7 @@ window.onload = function() {
     }
 
     function initEproboteaters(){
-        console.log("init eproboteaters");
+        log("init eproboteaters");
 
         for (var i=0;i<simsettings.EPROBOTS_INIT;i++){
 
@@ -199,7 +199,8 @@ window.onload = function() {
             //}else if (new_hue < 0){
             //    new_hue = 360 + new_hue;
             //}
-            var new_hue = body_eprobot.my_parent.hue;
+            //var new_hue = body_eprobot.my_parent.hue;
+            var new_hue = tools_random(360);
             var new_size = body_eprobot.my_parent.size + tools_random2(-2, 3);
             if (new_size<1){
                 new_size=1;
@@ -224,7 +225,7 @@ window.onload = function() {
         let new_x = body_eproboteater.position.x+tools_random2(-10,10);
         let new_y = body_eproboteater.position.y+tools_random2(-10,10);
         //console.log(new_x,new_y);
-        if (eproboteaters.length <= simsettings.EPROBOTS_MAX){
+        if (eproboteaters.length <= simsettings.EPROBOTS_MAX/10){
             var new_program = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, body_eproboteater.my_parent.program);
             var new_data = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, body_eproboteater.my_parent.init_data);
 
@@ -277,7 +278,6 @@ window.onload = function() {
         if (body_eprobot.my_active === false){
             return;
         }
-
 
         body_eprobot.my_active = false;
         Matter.World.remove(engine.world, body_eprobot);
@@ -399,12 +399,12 @@ window.onload = function() {
     }
 
     function toggle_run(){
-        console.log("click");
+        log("click");
         if (runner.enabled){
-            console.log("stop");
+            log("stop");
             runner.enabled=false;
         }else{
-            console.log("start");
+            log("start");
             runner.enabled=true;
         }
 

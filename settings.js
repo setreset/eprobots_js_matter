@@ -1,4 +1,4 @@
-console.log(window.screen.width);
+log(window.screen.width);
 var WORLD_WIDTH = window.innerWidth; //window.screen.width; //1800;
 var WORLD_HEIGHT = window.innerHeight; //window.screen.height; //800
 
@@ -19,13 +19,3 @@ var simsettings = {
     ENERGY_COUNT: 10, //(WORLD_WIDTH * WORLD_HEIGHT) / 50000,
     UPDATE_RATE: 10
 };
-
-var stats = {};
-
-function stats_incr(key){
-    if (key in stats){
-        stats[key]++;
-    }else{
-        stats[key] = 1;
-    }
-}

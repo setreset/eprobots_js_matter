@@ -115,7 +115,7 @@ class EprobotEater {
         if (isFinite(speed_val)){
             var speed = speed_val % simsettings.IMPULSE_MAX;
         }else{
-            console.log("Infinite: "+speed_val);
+            log("Infinite: "+speed_val);
             var speed = tools_random(simsettings.IMPULSE_MAX); // random
         }
 
@@ -129,7 +129,7 @@ class EprobotEater {
         if (isFinite(angle_val)){
             var angle_deg = Math.abs(angle_val) % 360;
         }else{
-            console.log("Infinite: "+angle_val);
+            log("Infinite: "+angle_val);
             var angle_deg = tools_random(360); // random
         }
 
@@ -197,7 +197,7 @@ class EprobotEater {
                 Matter.Body.setAngle(this.body, angle);
             }
         }else{
-            this.body.render.fillStyle = "#000000";
+            //this.body.render.fillStyle = "#000000";
             Matter.Body.setStatic(this.body, true);
         }
 

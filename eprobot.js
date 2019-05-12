@@ -33,6 +33,7 @@ class Eprobot {
 
         this.body.my_label = "Eprobot Body";
         this.body.my_parent = this;
+        this.body.my_active = true;
 
         //let eprobot_sensor = Matter.Bodies.circle(x_pos, y_pos, 60, options_sensor);
         //eprobot_sensor.isSensor = true;
@@ -115,7 +116,7 @@ class Eprobot {
         if (isFinite(speed_val)){
             var speed = speed_val % simsettings.IMPULSE_MAX;
         }else{
-            console.log("Infinite: "+speed_val);
+            log("Infinite: "+speed_val);
             var speed = tools_random(simsettings.IMPULSE_MAX); // random
         }
 
@@ -129,7 +130,7 @@ class Eprobot {
         if (isFinite(angle_val)){
             var angle_deg = Math.abs(angle_val) % 360;
         }else{
-            console.log("Infinite: "+angle_val);
+            log("Infinite: "+angle_val);
             var angle_deg = tools_random(360); // random
         }
 
@@ -205,7 +206,11 @@ class Eprobot {
     }
 
     isAlive(){
-        return this.age < this.lifetime;
+        if (!this.body.my_active){
+            return false
+        }else{
+            return this.age < this.lifetime;
+        }
     }
 
     isExistent(){
