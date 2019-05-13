@@ -1,8 +1,10 @@
 class Eprobot {
 
-    constructor(x_pos, y_pos, program, init_data, hue, size) {
+    constructor(kind, x_pos, y_pos, program, init_data, hue, size) {
+        this.kind = kind;
         this.hue = hue;
         this.size = size;
+        this.energy_consumed = 0;
 
         let options_body = {
             //density: 0.04, //default 0.001
@@ -147,10 +149,13 @@ class Eprobot {
             if (this.age%simsettings.UPDATE_RATE==0){
 
                 // input
-                this.working_data[2] = this.detected_energy;
-                this.working_data[3] = this.detected_eprobots;
-                this.working_data[4] = this.age;
-                this.working_data[5] = tools_random2(-100, 100);
+                //this.working_data[2] = this.detected_energy;
+                //this.working_data[3] = this.detected_eprobots;
+                this.working_data[2] = this.age;
+                this.working_data[3] = this.energy_consumed;
+                this.working_data[4] = tools_random2(-100, 100);
+                this.working_data[5] = parseInt(this.body.position.x);
+                this.working_data[6] = parseInt(this.body.position.y);
 
                 let speedangle = this.getMoveOISC();
                 let speed = speedangle[0];
