@@ -2,7 +2,7 @@ log(window.screen.width);
 var WORLD_WIDTH = window.innerWidth; //window.screen.width; //1800;
 var WORLD_HEIGHT = window.innerHeight; //window.screen.height; //800
 
-let concurrency = 4;
+let CONCURRENCY = 4;
 
 var simsettings = {
     LIFETIME_BASE: 500,
@@ -13,12 +13,12 @@ var simsettings = {
     MUTATE_STRENGTH: 400,
     VELOCITY_MAX: 10,
     IMPULSE_MAX: 7,
-    EPROBOTS_MAX: 500/concurrency,
+    EPROBOTS_MAX: 500/CONCURRENCY,
     BORDERS: true,
     FOSSILTIME: 250,
     EPROBOTS_INIT: 50,
     BODY_RADIUS: 3,
     ENERGY_COUNT: 4, //(WORLD_WIDTH * WORLD_HEIGHT) / 50000,
     UPDATE_RATE: 10,
-    EPROBOT_CONCURRENCY: concurrency
+    EPROBOT_CONCURRENCY: CONCURRENCY
 };
