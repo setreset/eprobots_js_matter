@@ -1,3 +1,5 @@
+var engine;
+
 window.onload = function() {
 
     Matter.use(
@@ -7,7 +9,8 @@ window.onload = function() {
     var myCanvas = document.getElementById('world');
 
     // create an engine
-    var engine = Matter.Engine.create();
+    engine = Matter.Engine.create();
+    //engine.timing.timeScale=0.1;
 
     // turn gravity off
     engine.world.gravity.y = 0;
@@ -248,12 +251,19 @@ window.onload = function() {
             //    new_hue = 360 + new_hue;
             //}
             var new_hue = body_eproboteater.my_parent.hue;
-            var new_size = body_eproboteater.my_parent.size + tools_random2(-2, 3);
-            if (new_size<1){
-                new_size=1;
-            }else if (new_size>6){
-                new_size=6;
+            let new_size;
+            if (Math.random()>0.8){
+                new_size = body_eproboteater.my_parent.size + tools_random2(-2, 3);
+                if (new_size<1){
+                    new_size=1;
+                }else if (new_size>6){
+                    new_size=6;
+                }
+            }else{
+                new_size = body_eproboteater.my_parent.size;
             }
+
+
 
             var new_eproboteater = new EprobotEater(new_x, new_y, new_program, new_data, new_hue, new_size);
             eproboteaters.push(new_eproboteater);

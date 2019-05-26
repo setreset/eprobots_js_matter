@@ -143,6 +143,27 @@ class Eprobot {
 
 
 
+    q(){
+        var all_bodies = Matter.Composite.allBodies(engine.world);
+
+        var raylength = 200;
+        var raywith = this.size;
+        let pos_x = this.body.position.x + (raylength/2)*Math.cos(this.body.angle);
+        let pos_y = this.body.position.y + (raylength/2)*Math.sin(this.body.angle);
+        let ray = Matter.Bodies.rectangle(pos_x, pos_y, raylength, raywith, { angle: this.body.angle });
+        //Matter.World.add(engine.world, ray);
+        //var verts = Matter.Vertices.create([{ x: -500, y: -500 }, { x: -500, y: 500 }, { x: 500, y: 500 }, { x: 500, y: -500 }], eprobot.body)
+        //var bounds = Matter.Bounds.create(verts);
+        var bodies_in_bounds = Matter.Query.region(all_bodies, ray.bounds);
+        let energy_counter = 0;
+        for (let body_in_bounds of bodies_in_bounds){
+            if (body_in_bounds.my_label == "Energy"){
+                energy_counter++;
+            }
+        }
+        return energy_counter;
+    }
+
     update(){
 
         if (this.isAlive()){
@@ -156,6 +177,7 @@ class Eprobot {
                 this.working_data[4] = tools_random2(-100, 100);
                 this.working_data[5] = parseInt(this.body.position.x);
                 this.working_data[6] = parseInt(this.body.position.y);
+                this.working_data[7] = this.q();
 
                 let speedangle = this.getMoveOISC();
                 let speed = speedangle[0];
