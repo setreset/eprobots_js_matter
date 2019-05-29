@@ -1,4 +1,5 @@
 var engine;
+var eprobots;
 
 window.onload = function() {
 
@@ -146,7 +147,7 @@ window.onload = function() {
     render.mouse = mouse;
 
     var steps = 0;
-    var eprobots = [];
+    eprobots = [];
     for (let i=0;i<simsettings.EPROBOT_CONCURRENCY;i++){
         eprobots.push([]);
     }
@@ -234,67 +235,6 @@ window.onload = function() {
         }
     }
 
-    function eproboteaterProcreation(body_eproboteater){
-        // b darf sich fortpflanzen!
-        //console.log(b);
-        let new_x = body_eproboteater.position.x+tools_random2(-10,10);
-        let new_y = body_eproboteater.position.y+tools_random2(-10,10);
-        //console.log(new_x,new_y);
-        if (eproboteaters.length <= simsettings.EPROBOTS_MAX/10){
-            var new_program = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, body_eproboteater.my_parent.program);
-            var new_data = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, body_eproboteater.my_parent.init_data);
-
-            //var new_hue = body_eprobot.my_parent.hue + tools_random2(-9, 10);
-            //if (new_hue > 360){
-            //    new_hue = new_hue - 360;
-            //}else if (new_hue < 0){
-            //    new_hue = 360 + new_hue;
-            //}
-            var new_hue = body_eproboteater.my_parent.hue;
-            let new_size;
-            if (Math.random()>0.8){
-                new_size = body_eproboteater.my_parent.size + tools_random2(-2, 3);
-                if (new_size<1){
-                    new_size=1;
-                }else if (new_size>6){
-                    new_size=6;
-                }
-            }else{
-                new_size = body_eproboteater.my_parent.size;
-            }
-
-
-
-            var new_eproboteater = new EprobotEater(new_x, new_y, new_program, new_data, new_hue, new_size);
-            eproboteaters.push(new_eproboteater);
-            Matter.World.add(engine.world, new_eproboteater.body);
-        }else{
-            body_eproboteater.my_parent.lifetime += 50;
-            if (body_eproboteater.my_parent.lifetime > simsettings.LIFETIME_BASE * 3){
-                body_eproboteater.my_parent.lifetime = simsettings.LIFETIME_BASE * 3;
-            }
-        }
-    }
-
-    function eprobotEnergyCollision(body_eprobot, body_energy){
-        // a entfernen
-        if (body_energy.my_active === false){
-            return;
-        }
-
-        body_energy.my_energycount--;
-        if (body_energy.my_energycount<=0){
-            body_energy.my_active = false;
-            Matter.World.remove(engine.world, body_energy);
-
-            // neues Energyobjekt
-            var energy = new Energy(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
-            Matter.World.add(engine.world, energy.body);
-        }
-
-        eprobotProcreation(body_eprobot);
-    }
-
     function eproboteaterEprobotCollision(body_eproboteater, body_eprobot){
         // a entfernen
         if (body_eprobot.my_active === false){
@@ -332,10 +272,10 @@ window.onload = function() {
 
             if (a.my_label == "Eprobot Body" && b.my_label == "Energy"){
                 //console.log("Bang");
-                eprobotEnergyCollision(a, b);
+                a.my_parent.energy_collision(b);
             }else if(a.my_label == "Energy" && b.my_label == "Eprobot Body"){
                 //console.log("Bang2");
-                eprobotEnergyCollision(b, a);
+                b.my_parent.energy_collision(a);
             }
 
             else if (a.my_label == "Eproboteater Body" && b.my_label == "Eprobot Body"){

@@ -232,6 +232,62 @@ class Eprobot {
         this.age++;
     }
 
+    procreation(){
+        this.energy_consumed++;
+        // b darf sich fortpflanzen!
+        //console.log(b);
+        let new_x = this.body.position.x+tools_random2(-10,10);
+        let new_y = this.body.position.y+tools_random2(-10,10);
+        //console.log(new_x,new_y);
+        if (eprobots[this.kind].length <= simsettings.EPROBOTS_MAX){
+            var new_program = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, this.body.my_parent.program);
+            var new_data = tools_mutate(simsettings.MUTATE_POSSIBILITY, simsettings.MUTATE_STRENGTH, this.body.my_parent.init_data);
+
+            //var new_hue = body_eprobot.my_parent.hue + tools_random2(-9, 10);
+            //if (new_hue > 360){
+            //    new_hue = new_hue - 360;
+            //}else if (new_hue < 0){
+            //    new_hue = 360 + new_hue;
+            //}
+            var new_hue = this.hue;
+            //var new_hue = tools_random(360);
+            var new_size = this.size + tools_random2(-2, 3);
+            if (new_size<1){
+                new_size=1;
+            }else if (new_size>6){
+                new_size=6;
+            }
+
+            var new_eprobot = new Eprobot(this.kind, new_x, new_y, new_program, new_data, new_hue, new_size);
+            eprobots[this.kind].push(new_eprobot);
+            Matter.World.add(engine.world, new_eprobot.body);
+        }else{
+            this.lifetime += 50;
+            if (this.lifetime > simsettings.LIFETIME_BASE * 3){
+                this.lifetime = simsettings.LIFETIME_BASE * 3;
+            }
+        }
+    }
+
+    energy_collision(body_energy){
+        // a entfernen
+        if (body_energy.my_active === false){
+            return;
+        }
+
+        body_energy.my_energycount--;
+        if (body_energy.my_energycount<=0){
+            body_energy.my_active = false;
+            Matter.World.remove(engine.world, body_energy);
+
+            // neues Energyobjekt
+            var energy = new Energy(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
+            Matter.World.add(engine.world, energy.body);
+        }
+
+        this.procreation();
+    }
+
     isAlive(){
         if (!this.body.my_active){
             return false
