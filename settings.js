@@ -2,7 +2,7 @@ log(window.screen.width);
 var WORLD_WIDTH = window.innerWidth; //window.screen.width; //1800;
 var WORLD_HEIGHT = window.innerHeight; //window.screen.height; //800
 
-let CONCURRENCY = 4;
+let CONCURRENCY = 1;
 
 var simsettings = {
     LIFETIME_BASE: 500,

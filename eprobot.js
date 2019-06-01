@@ -37,6 +37,8 @@ class Eprobot {
         this.body.my_parent = this;
         this.body.my_active = true;
 
+        this.internal_angle = 0;
+
         //let eprobot_sensor = Matter.Bodies.circle(x_pos, y_pos, 60, options_sensor);
         //eprobot_sensor.isSensor = true;
 
@@ -101,6 +103,25 @@ class Eprobot {
         var speed = tools_random(10);
         var angle = Math.random() * Math.PI * 2; // random angle
         return [speed, angle];
+    }
+
+    getMoveMy(){
+        var speed = 7;
+        var q = this.q();
+        if (q>0){
+            this.body.render.fillStyle = "#0066f5";
+        }else{
+            this.body.render.fillStyle = "#ff0000";
+        }
+
+        if (this.age%100==0){
+            if (q==0){
+                this.internal_angle=Math.random() * Math.PI * 2; // random angle
+            }
+
+        }
+
+        return [speed, this.internal_angle];
     }
 
     getMoveOISC(){
@@ -179,7 +200,7 @@ class Eprobot {
                 this.working_data[6] = parseInt(this.body.position.y);
                 this.working_data[7] = this.q();
 
-                let speedangle = this.getMoveOISC();
+                let speedangle = this.getMoveMy();
                 let speed = speedangle[0];
                 let angle = speedangle[1];
 
@@ -233,6 +254,7 @@ class Eprobot {
     }
 
     procreation(){
+        return;
         this.energy_consumed++;
         // b darf sich fortpflanzen!
         //console.log(b);
@@ -289,6 +311,7 @@ class Eprobot {
     }
 
     isAlive(){
+        return true;
         if (!this.body.my_active){
             return false
         }else{
@@ -297,6 +320,7 @@ class Eprobot {
     }
 
     isExistent(){
+        return true;
         return this.age < this.lifetime + simsettings.FOSSILTIME;
     }
 }

@@ -153,12 +153,34 @@ window.onload = function() {
     }
     var eproboteaters = [];
 
+    // =====================================================
+
+    var program = [];
+    for (var pi = 0; pi < simsettings.PROGRAM_LENGTH; pi++) {
+        var val = tools_random(simsettings.PROGRAM_LENGTH * 10) - simsettings.PROGRAM_LENGTH;
+        program.push(val);
+    }
+
+    var init_data = [];
+    for (var di = 0; di < simsettings.DATA_LENGTH; di++) {
+        var val = tools_random2(-720, 720);
+        init_data.push(val);
+    }
+
+    //var hue = tools_random(360);
+    var hue = 0;
+    var eprobot = new Eprobot(0, WORLD_WIDTH/2, WORLD_HEIGHT/2, program, init_data, hue, 5);
+    eprobots[0].push(eprobot);
+    Matter.World.add(engine.world, eprobot.body);
+
+    // =====================================================
+
     Matter.Events.on(engine, 'beforeUpdate', function(event) {
         // init wenn keine eprobots vorhanden
         for (let kind=0;kind<simsettings.EPROBOT_CONCURRENCY;kind++) {
             let eprobot_list = eprobots[kind];
             if (eprobot_list.length == 0) {
-                initEprobots(kind);
+                //initEprobots(kind);
             }
 
             var eprobots_new = [];
