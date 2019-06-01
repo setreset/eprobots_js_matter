@@ -1,8 +1,8 @@
 class Eprobot {
 
-    constructor(kind, x_pos, y_pos, program, init_data, hue, size) {
+    constructor(kind, x_pos, y_pos, program, init_data, size) {
         this.kind = kind;
-        this.hue = hue;
+        this.hue = kind*(360/simsettings.EPROBOT_CONCURRENCY);;
         this.size = size;
         this.energy_consumed = 0;
 
@@ -12,7 +12,7 @@ class Eprobot {
             frictionAir: 0.001, //default 0.01
             restitution: 0.8, //default 0
             render: {
-                fillStyle: "hsl("+hue+", 100%, 50%)",
+                fillStyle: "hsl("+this.hue+", 100%, 50%)",
                 strokeStyle: 'black',
                 lineWidth: 1
             }
@@ -249,8 +249,7 @@ class Eprobot {
             //}else if (new_hue < 0){
             //    new_hue = 360 + new_hue;
             //}
-            var new_hue = this.hue;
-            //var new_hue = tools_random(360);
+
             var new_size = this.size + tools_random2(-2, 3);
             if (new_size<1){
                 new_size=1;
@@ -258,7 +257,7 @@ class Eprobot {
                 new_size=6;
             }
 
-            var new_eprobot = new Eprobot(this.kind, new_x, new_y, new_program, new_data, new_hue, new_size);
+            var new_eprobot = new Eprobot(this.kind, new_x, new_y, new_program, new_data, new_size);
             eprobots[this.kind].push(new_eprobot);
             Matter.World.add(engine.world, new_eprobot.body);
         }else{
