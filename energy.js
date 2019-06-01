@@ -13,6 +13,6 @@ class Energy {
         this.body.my_label = "Energy";
         this.body.my_active = true;
         this.body.my_parent = this;
-        this.body.my_energycount = 500;
+        this.body.my_energycount = 10;
     }
 }
