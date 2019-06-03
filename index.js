@@ -146,8 +146,10 @@ window.onload = function() {
 
     var steps = 0;
     eprobots = [];
+    var eprobots_ate = [];
     for (let i=0;i<simsettings.EPROBOT_CONCURRENCY;i++){
         eprobots.push([]);
+        //initEprobots(i);
     }
     var eproboteaters = [];
 
@@ -163,18 +165,19 @@ window.onload = function() {
             for (var i=0;i<eprobot_list.length;i++){
                 var eprobot = eprobot_list[i];
 
-                if (eprobot.isExistent()){
+                if (eprobot.isAlive()){
                     eprobot.update();
                     eprobots_new.push(eprobot);
                 }else{
-                    Matter.World.remove(engine.world, eprobot.body);
+                    Matter.Body.setStatic(eprobot.body, true);
+                    eprobots_ate.push({"expire": steps+simsettings.FOSSILTIME, "eprobot":eprobot});
                 }
 
             }
             eprobots[kind] = eprobots_new;
         }
 
-        if (eprobots.length>=200 && eproboteaters.length==0){
+        /*if (eprobots.length>=200 && eproboteaters.length==0){
             //initEproboteaters();
         }
 
@@ -190,7 +193,17 @@ window.onload = function() {
             }
 
         }
-        eproboteaters = eproboteaters_new;
+        eproboteaters = eproboteaters_new;*/
+
+        var c = 0;
+        for (let eprobot_ate of eprobots_ate){
+            if (steps>=eprobot_ate.expire){
+                Matter.World.remove(engine.world, eprobot_ate.eprobot.body);
+                c++;
+            }
+        }
+
+        eprobots_ate = eprobots_ate.slice(c);
 
         steps++;
     });

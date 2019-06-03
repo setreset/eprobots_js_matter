@@ -2,7 +2,7 @@ class Energy {
 
     constructor(x_pos, y_pos) {
         this.body = Matter.Bodies.circle(x_pos, y_pos, 25, {
-            isStatic: false,
+            isStatic: true,
             render: {
                 fillStyle: '#0bcb11',
                 //strokeStyle: 'black',
