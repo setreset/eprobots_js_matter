@@ -166,8 +166,7 @@ window.onload = function() {
     }
 
     //var hue = tools_random(360);
-    var hue = 0;
-    var eprobot = new Eprobot(0, WORLD_WIDTH/2, WORLD_HEIGHT/2, program, init_data, hue, 5);
+    var eprobot = new Eprobot(0, WORLD_WIDTH/2, WORLD_HEIGHT/2, program, init_data, 15);
     eprobots[0].push(eprobot);
     Matter.World.add(engine.world, eprobot.body);
 

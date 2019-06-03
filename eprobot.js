@@ -2,9 +2,10 @@ class Eprobot {
 
     constructor(kind, x_pos, y_pos, program, init_data, size) {
         this.kind = kind;
-        this.hue = kind*(360/simsettings.EPROBOT_CONCURRENCY);;
+        this.hue = 0;
         this.size = size;
         this.energy_consumed = 0;
+        this.main_color = "#92161e";
 
         let options_body = {
             //density: 0.04, //default 0.001
@@ -12,7 +13,7 @@ class Eprobot {
             frictionAir: 0.001, //default 0.01
             restitution: 0.8, //default 0
             render: {
-                fillStyle: "hsl("+this.hue+", 100%, 50%)",
+                fillStyle: this.main_color,
                 strokeStyle: 'black',
                 lineWidth: 1
             }
@@ -111,7 +112,7 @@ class Eprobot {
         if (q>0){
             this.body.render.fillStyle = "#0066f5";
         }else{
-            this.body.render.fillStyle = "#ff0000";
+            this.body.render.fillStyle = this.main_color;
         }
 
         if (this.age%100==0){
