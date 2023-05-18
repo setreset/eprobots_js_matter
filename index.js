@@ -1,5 +1,6 @@
 var engine;
 var eprobots;
+var mousestate=1;
 
 window.onload = function() {
 
@@ -25,7 +26,7 @@ window.onload = function() {
             height: WORLD_HEIGHT,
             background: '#eeeeee',
             wireframes: false,
-            showAngleIndicator: true
+            showAngleIndicator: false
         }
     });
 
@@ -141,24 +142,47 @@ window.onload = function() {
 
     Matter.World.add(engine.world, mouseConstraint);
 
+    Matter.Events.on(mouseConstraint, 'mousedown', function (event) {
+        log("mousedown called");
+        var body = mouseConstraint.body;
+        if (body && body.hasOwnProperty("my_energycount")){
+            log(body.my_energycount);
+        }
+
+        if (mousestate==1){
+            var mousePosition = event.mouse.position;
+            //log(mousePosition);
+            //mp = mousePosition;
+            //mouseIsDown = true;
+            // neues Energyobjekt
+            var energy = new Energy(mousePosition.x, mousePosition.y);
+            Matter.World.add(engine.world, energy.body);
+        }
+    });
+
     // keep the mouse in sync with rendering
     render.mouse = mouse;
 
     var steps = 0;
+    var fitness=0;
     eprobots = [];
     var eprobots_ate = [];
     for (let i=0;i<simsettings.EPROBOT_CONCURRENCY;i++){
         eprobots.push([]);
-        //initEprobots(i);
+        initEprobots(i);
     }
     var eproboteaters = [];
 
     Matter.Events.on(engine, 'beforeUpdate', function(event) {
+        if (steps%1000==0){
+            log("fitness: "+fitness);
+            fitness=0;
+        }
         // init wenn keine eprobots vorhanden
         for (let kind=0;kind<simsettings.EPROBOT_CONCURRENCY;kind++) {
             let eprobot_list = eprobots[kind];
             if (eprobot_list.length == 0) {
-                initEprobots(kind);
+                //initEprobots(kind);
             }
 
             var eprobots_new = [];
@@ -246,9 +270,11 @@ window.onload = function() {
             if (a.my_label == "Eprobot Body" && b.my_label == "Energy"){
                 //console.log("Bang");
                 a.my_parent.energy_collision(b);
+                fitness++;
             }else if(a.my_label == "Energy" && b.my_label == "Eprobot Body"){
                 //console.log("Bang2");
                 b.my_parent.energy_collision(a);
+                fitness++;
             }
 
             else if (a.my_label == "Eproboteater Body" && b.my_label == "Eprobot Body"){

@@ -179,6 +179,7 @@ class Eprobot {
             this.working_data[7] = this.q();
 
             let speedangle = this.getMoveOISC();
+            //let speedangle = this.getMoveRandom();
             let speed = speedangle[0];
             let angle = speedangle[1];
 
@@ -269,14 +270,14 @@ class Eprobot {
             return;
         }
 
-        body_energy.my_energycount--;
+        //body_energy.my_energycount--;
         if (body_energy.my_energycount<=0){
             body_energy.my_active = false;
             Matter.World.remove(engine.world, body_energy);
 
             // neues Energyobjekt
-            var energy = new Energy(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
-            Matter.World.add(engine.world, energy.body);
+            //var energy = new Energy(tools_random(WORLD_WIDTH), tools_random(WORLD_HEIGHT));
+            //Matter.World.add(engine.world, energy.body);
         }
 
         this.procreation();
