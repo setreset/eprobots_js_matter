@@ -176,7 +176,7 @@ class Eprobot {
             this.working_data[4] = tools_random2(-100, 100);
             this.working_data[5] = parseInt(this.body.position.x);
             this.working_data[6] = parseInt(this.body.position.y);
-            this.working_data[7] = this.q();
+            //this.working_data[7] = this.q();
 
             let speedangle = this.getMoveOISC();
             //let speedangle = this.getMoveRandom();
